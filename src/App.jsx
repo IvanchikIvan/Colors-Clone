@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [colors, setColors] = useState([]);
+
+  const generateColorCode = () => {
+    let letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      let randomPosition = Math.floor(Math.random() * 16);
+      color += letters[randomPosition];
+    }
+    return color;
+  };
+  const getNewColor = () => {
+    let local_colors = [];
+    for (let i = 0; i < 6; i++) {
+      local_colors[i] = generateColorCode();
+    }
+    setColors(local_colors);
+  };
+
+  const hadleSpaceBarClick = (e) => {
+    if (e.code === "Space") {
+      getNewColor();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", hadleSpaceBarClick);
+
+    return () => {
+      document.removeEventListener("keydown", hadleSpaceBarClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    getNewColor();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="App">
+      {colors.map((color) => (
+        <div
+          className="color"
+          style={{
+            backgroundColor: color,
+          }}
+        >
+          <h1>{color}</h1>
+        </div>
+      ))}
+    </div>
+  );
+};
 
-export default App
+export default App;
